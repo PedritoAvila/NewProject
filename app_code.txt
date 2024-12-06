@@ -1,0 +1,68 @@
+
+from flask import Flask, request, jsonify, send_file
+import pandas as pd
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+app = Flask(__name__)
+
+# Simulación de datos
+data = {
+    "Fecha": pd.date_range(start="2023-01-01", periods=100),
+    "Categoría": ["A", "B", "C", "D"] * 25,
+    "Valor": [i * 10 for i in range(100)],
+}
+df = pd.DataFrame(data)
+
+@app.route('/generate_report', methods=['POST'])
+def generate_report():
+    try:
+        request_data = request.json
+        start_date = pd.to_datetime(request_data.get("start_date"))
+        end_date = pd.to_datetime(request_data.get("end_date"))
+        format_type = request_data.get("format", "excel").lower()
+
+        filtered_data = df[(df["Fecha"] >= start_date) & (df["Fecha"] <= end_date)]
+
+        if filtered_data.empty:
+            return jsonify({"message": "No hay datos en el rango de fechas especificado"}), 404
+
+        if format_type == "excel":
+            return generate_excel(filtered_data)
+        elif format_type == "pdf":
+            return generate_pdf(filtered_data)
+        else:
+            return jsonify({"message": "Formato no soportado"}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def generate_excel(filtered_data):
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        filtered_data.to_excel(writer, index=False, sheet_name='Reporte')
+    output.seek(0)
+    return send_file(output, as_attachment=True, download_name="reporte.xlsx", mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+def generate_pdf(filtered_data):
+    output = BytesIO()
+    pdf = canvas.Canvas(output, pagesize=letter)
+    pdf.drawString(100, 750, "Reporte Personalizado")
+    pdf.drawString(100, 735, "Rango de Fechas:")
+    pdf.drawString(250, 735, f"{filtered_data['Fecha'].min().strftime('%Y-%m-%d')} - {filtered_data['Fecha'].max().strftime('%Y-%m-%d')}")
+
+    y_position = 700
+    for index, row in filtered_data.iterrows():
+        pdf.drawString(100, y_position, f"{row['Fecha'].strftime('%Y-%m-%d')} | {row['Categoría']} | {row['Valor']}")
+        y_position -= 15
+        if y_position < 50:
+            pdf.showPage()
+            y_position = 750
+
+    pdf.save()
+    output.seek(0)
+    return send_file(output, as_attachment=True, download_name="reporte.pdf", mimetype="application/pdf")
+
+if __name__ == '__main__':
+    app.run(debug=True)

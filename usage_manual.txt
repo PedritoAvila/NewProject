@@ -1,0 +1,45 @@
+
+#### **Sistema de Gestión de Reportes**
+
+---
+
+### **Cómo usar la aplicación**
+
+1. **Ejecutar la aplicación**
+   - Clona el repositorio y ejecuta el script `app.py`. El servidor estará disponible en:
+     ```
+     http://127.0.0.1:5000
+     ```
+
+2. **Generar un reporte**
+   - Utiliza herramientas como Postman o curl para hacer una solicitud POST al endpoint `/generate_report`.
+
+   **Cuerpo JSON:**
+     ```json
+     {
+       "start_date": "YYYY-MM-DD",
+       "end_date": "YYYY-MM-DD",
+       "format": "pdf"  // o "excel"
+     }
+     ```
+
+3. **Ejemplo de uso en Postman**
+   - Configura la URL como `http://127.0.0.1:5000/generate_report`.
+   - Selecciona el método `POST`.
+   - En el cuerpo, selecciona `raw` y el formato `JSON`:
+     ```json
+     {
+       "start_date": "2023-01-01",
+       "end_date": "2023-01-10",
+       "format": "pdf"
+     }
+     ```
+
+4. **Respuesta esperada**
+   - Si los datos son válidos, recibirás un archivo descargable (PDF o Excel).
+   - Si hay un error, recibirás un mensaje de error en formato JSON.
+
+5. **Ejemplo rápido con curl**
+   ```bash
+   curl -X POST http://127.0.0.1:5000/generate_report    -H "Content-Type: application/json"    -d '{"start_date": "2023-01-01", "end_date": "2023-01-10", "format": "excel"}'    --output reporte.xlsx
+   ```
