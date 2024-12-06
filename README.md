@@ -1,6 +1,9 @@
 # NewProject
+
 New project for the exam
+
 Introducción
+
 Este proyecto, titulado "Sistema de Gestión de Reportes", tiene como objetivo desarrollar una aplicación que permita a los usuarios generar y descargar reportes personalizados en formatos PDF y Excel, basados en un rango de fechas específico.
 
 La aplicación está diseñada para resolver problemas relacionados con la organización y el análisis de datos en empresas o instituciones que manejan grandes volúmenes de información. Utilizando herramientas modernas de desarrollo, integración con GitHub y metodologías ágiles, este software busca ofrecer una solución eficiente, intuitiva y fácil de implementar.
