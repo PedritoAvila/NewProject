@@ -15,6 +15,7 @@ RF7: Exportar los reportes generados en formato Excel o PDF.
 Este repositorio incluye:
 
 El código fuente del proyecto desarrollado en GitHub.
+
 Documentación detallada de los pasos de desarrollo y pruebas.
 Recursos adicionales, como instrucciones de instalación y configuración.
 Gracias por interesarte en este proyecto. Si tienes preguntas, comentarios o deseas colaborar, no dudes en crear un issue o enviar un pull request.
